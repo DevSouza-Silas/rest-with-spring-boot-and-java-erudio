@@ -31,3 +31,12 @@ jobs:
       - name: Docker Compose Build
         working-directory: ./05_firstStepInJavaWithSpringBoot
         run: docker compose build
+
+      - name: Push to Docker Hub Container Registry
+        run: |
+          docker tag ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:latest ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:${{ github.run_id }}
+  
+          docker push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:${{ github.run_id }}
+          docker push ${{ secrets.DOCKER_USERNAME }}/rest-with-spring-boot-erudio:latest
+
+          
