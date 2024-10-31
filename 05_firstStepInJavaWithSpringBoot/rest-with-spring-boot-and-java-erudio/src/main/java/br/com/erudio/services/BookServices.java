@@ -55,6 +55,27 @@ public class BookServices {
 		return assembler.toModel(booksVosPage, link);
 	}
 	
+	public PagedModel<EntityModel<BookVO>> findByTitle(String title, Pageable pageable) {
+
+		logger.info("Find by name book!");
+
+		var booksPage = repository.findByTitle(title, pageable);
+		
+		var booksVosPage = booksPage.map(b -> DozerMapper.parseObject(b, BookVO.class));
+	
+		booksVosPage.map(
+				b -> b.add(
+						linkTo(methodOn(BookController.class)
+								.findById(b.getKey())).withSelfRel()));
+		
+		Link link = linkTo(
+				methodOn(BookController.class)
+					.findAll(pageable.getPageNumber(), 
+						pageable.getPageSize(), 
+						"asc")).withSelfRel(); 
+		
+		return assembler.toModel(booksVosPage, link);
+	}
 	/* ******** MÉTODO SEM PAGINAÇÃO *********
 	public List<BookVO> findAll() {
 
